@@ -18,5 +18,6 @@ CarrierWave.configure do |config|
   config.storage = :fog
 end
 use ActiveRecord::ConnectionAdapters::RefreshConnectionManagement
+register Kaminari::Helpers::SinatraHelpers
 
 run Sinatra::Application

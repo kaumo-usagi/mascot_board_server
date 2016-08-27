@@ -1,4 +1,6 @@
-require 'json'
+require 'padrino-helpers'
+require 'kaminari/sinatra'
+
 post '/boards/:board_name/stamps.json' do
   data = JSON.parse(request.body.read)
   stamps = PutStamp.new(
@@ -32,7 +34,7 @@ delete '/boards/:board_name/stamps/:text_id.json' do
 end
 
 get '/stamp_list/:page.json' do
-  stamps = Stamp.all
+  stamps = Stamp.page(params[:page]).per(15)
   {
     id:  stamp.map{ |stamp| stamp.id },
     url: stamp.map{ |stamp| stamp.url}
