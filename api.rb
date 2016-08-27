@@ -1,3 +1,4 @@
+require 'json'
 post '/boards/:board_name/stamps.json' do
   data = JSON.parse(request.body.read)
   stamps = PutStamp.new(
@@ -28,4 +29,12 @@ end
 
 delete '/boards/:board_name/stamps/:text_id.json' do
   PutText.find_by(text_id: params[:text_id].to_i, board_id: params[:board_name])
+end
+
+get '/stamp_list/:page.json' do
+  stamps = Stamp.all
+  {
+    id:  stamp.map{ |stamp| stamp.id },
+    url: stamp.map{ |stamp| stamp.url}
+  }.to_json
 end
