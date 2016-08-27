@@ -8,6 +8,7 @@ gem "sinatra-activerecord"
 gem "sinatra-websocket"
 gem "rake"
 gem 'bcrypt'
+gem 'carrierwave'
 gem "fog-aws"
 
 group :development, :test do
