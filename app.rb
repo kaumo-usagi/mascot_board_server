@@ -59,26 +59,30 @@ get '/boards/:id' do
 
   user_attrs = { id: 1, name: "izumin" }
 
-  if !request.websocket?
+  if @board.nil?
+    redirect "/"
+  elsif !request.websocket?
     erb :room
   else
     redis = EM::Hiredis.connect
+    channel = "boards::#{@board.id}"
 
     request.websocket do |ws|
       ws.onopen do
-        redis.pubsub.subscribe(@id) do |msg|
+        redis.pubsub.subscribe(channel) do |msg|
           ws.send({ user: user_attrs, body: msg }.to_json)
         end
       end
 
       ws.onmessage do |msg|
         EM.next_tick do
-          redis.publish(@id, msg).errback { |e| p e }
+          redis.publish(channel, msg).errback { |e| p e }
         end
       end
 
       ws.onclose do
-        redis.pubsub.unsubscribe(@id)
+        warn("close websocket connection")
+        redis.pubsub.unsubscribe(channel)
       end
     end
   end
