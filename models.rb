@@ -7,10 +7,14 @@ end
 
 
 class Stamp < ActiveRecord::Base
+  belongs_to :board
 end
 
 class User < ActiveRecord::Base
+  has_many :boards
 end
 
 class Board < ActiveRecord::Base
+  has_many :users
+  has_many :stamps
 end
