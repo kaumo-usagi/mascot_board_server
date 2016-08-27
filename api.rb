@@ -33,10 +33,7 @@ delete '/boards/:board_name/stamps/:text_id.json' do
   PutText.find_by(text_id: params[:text_id].to_i, board_id: params[:board_name])
 end
 
-get '/stamp_list/:page.json' do
+get '/stamps/:page.json' do
   stamps = Stamp.page(params[:page]).per(15)
-  {
-    id:  stamps.map{ |stamp| stamp.id },
-    url: stamps.map{ |stamp| stamp.data.url}
-  }.to_json
+  stamps.map{ |s| { id: s.id, url: s.data.url } }.to_json
 end
