@@ -2,7 +2,7 @@ require 'bundler'
 Bundler.require
 require 'sinatra/reloader' if development?
 require './models'
-require './stamp'
+require './api'
 require 'json'
 require 'securerandom'
 

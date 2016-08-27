@@ -30,7 +30,8 @@ ActiveRecord::Schema.define(version: 20160827064544) do
 
   create_table "put_texts", force: :cascade do |t|
     t.integer "board_id"
-    t.integer "stamp_id"
+    t.integer "text_id"
+    t.integer "body"
     t.string  "x"
     t.string  "y"
   end
