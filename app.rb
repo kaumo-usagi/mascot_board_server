@@ -9,12 +9,7 @@ use Rack::Session::Cookie
 set :server, 'thin'
 
 get '/' do
-  if session[:user_name]
-    @room_list = Room.all
-    erb :index
-  else
-    erb :index
-  end
+  erb :index
 end
 
 get '/sign_up' do
