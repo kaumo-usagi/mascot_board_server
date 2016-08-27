@@ -1,5 +1,6 @@
 require 'bundler'
 Bundler.require
+require 'sinatra/reloader' if development?
 require './models'
 require 'json'
 require 'securerandom'
