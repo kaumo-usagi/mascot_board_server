@@ -1,7 +1,7 @@
 post '/boards/:board_name/stamps.json' do
   data = JSON.parse(request.body.read)
   stamps = PutStamps.new(
-    Board_id: params[:board_name],
+    board_id: params[:board_name],
     stamp_id: data["stamp_id"], 
     x: data["x"], 
     y: data["y"]
