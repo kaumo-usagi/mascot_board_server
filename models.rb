@@ -13,7 +13,13 @@ end
 
 class User < ActiveRecord::Base
   belongs_to :board
-  validates name, uniqueness: true
+  validates :name, uniqueness: true
+  has_secure_password
+  validates :mail,
+    presence: true,
+    format: {with:/.+@.+/}
+  validates :password, confirmation: true,
+    unless: Proc.new { |a| a.password.blank? } 
 end
 
 class Board < ActiveRecord::Base

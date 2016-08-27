@@ -21,14 +21,14 @@ ActiveRecord::Schema.define(version: 20160827064544) do
     t.datetime "updated_at",  null: false
   end
 
-  create_table "putsstamps", force: :cascade do |t|
+  create_table "put_stamps", force: :cascade do |t|
     t.integer "board_id"
     t.integer "stamp_id"
     t.string  "x"
     t.string  "y"
   end
 
-  create_table "putstexts", force: :cascade do |t|
+  create_table "put_texts", force: :cascade do |t|
     t.integer "board_id"
     t.integer "stamp_id"
     t.string  "x"
@@ -51,6 +51,7 @@ ActiveRecord::Schema.define(version: 20160827064544) do
     t.boolean  "administrator",   default: false, null: false
     t.string   "mail"
     t.string   "password_digest"
+    t.string   "token"
   end
 
 end
