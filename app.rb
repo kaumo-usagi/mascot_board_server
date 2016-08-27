@@ -48,15 +48,14 @@ get '/admin_page' do
   end
 end
 
-post '/' do
-  session[:id] = SecureRandom.uuid
-  Board.create(name: session[:id], screen_name: params[:board_name])
-  redirect "/board_room/#{session[:id]}"
+post '/boards' do
+  name = SecureRandom.uuid
+  Board.create(name: name, screen_name: params[:board_name])
+  redirect "/boards/#{name}"
 end
 
-get '/board_room/:id' do
-  data = Board.find_by(name: session[:id])
-  @id = data.screen_name 
+get '/boards/:id' do
+  @board = Board.find_by(name: params[:id])
 
   user_attrs = { id: 1, name: "izumin" }
 
