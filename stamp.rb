@@ -1,11 +1,12 @@
 post '/boards/:board_name/stamps.json' do
   data = JSON.parse(request.body.read)
-  PutStamps.create(
+  stamps = PutStamps.new(
     Board_id: params[:board_name],
     stamp_id: data["stamp_id"], 
     x: data["x"], 
     y: data["y"]
   )
+  stamps.save ? status 204 : 404
 end
 
 delete '/boards/:board_name/stamps.json' do
