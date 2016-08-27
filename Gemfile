@@ -7,6 +7,7 @@ gem "sinatra-contrib"
 gem "sinatra-activerecord"
 gem "sinatra-websocket"
 gem "rake"
+gem 'bcrypt'
 
 group :development, :test do
   gem 'sqlite3'
