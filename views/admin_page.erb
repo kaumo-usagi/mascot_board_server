@@ -1,0 +1,12 @@
+<center>
+  <h1>ImageUploader</h1>
+  <form action="/stamp_uploader" method="POST" enctype="multipart/form-data">
+    <ul style="list-style:none;">
+      <input type="file" name="image" size="30">
+      <li><input type="submit"/></li><br>
+    </ul>
+  </form>
+  <% @stamps.each do |stamp| %>
+    <img src="<%= stamp.data %>" alt="">
+  <% end %>
+</center>

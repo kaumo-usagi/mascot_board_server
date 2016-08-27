@@ -5,7 +5,10 @@ require './models'
 require './api'
 require 'json'
 require 'securerandom'
-
+unless development? 
+  set :environment, :production
+  set :port, 80
+end
 use Rack::Session::Cookie
 enable :sessions
 
@@ -44,7 +47,7 @@ end
 post '/sign_up' do
   session[:user_token] = SecureRandom.uuid
   User.create(mail: params[:mail], token: session[:user_token], password: params[:password], password_confirmation: params[:password])
-  redirect '/admin_page'
+  redirect '/admin'
 end
 
 get '/sign_in' do
@@ -54,21 +57,27 @@ get '/sign_in' do
 end
 
 post '/sign_in' do
-  user = User.find_by_mail(mail: params[:mail])
+  user = User.find_by(mail: params[:mail])
   if user && user.authenticate(params[:password])
     session[:user_token] = user.token
-    redirect '/admin_page'
+    redirect '/admin'
   else
     redirect '/sign_up'
   end
 end
 
-get '/admin_page' do
+get '/admin' do
   if User.find_by(token: session[:user_token]).administrator?
+    @stamps = Stamp.all
     erb :admin_page
   else
     redirect '/sign_in'
   end
+end
+
+post '/stamp_uploader' do
+  Stamp.create(data: params[:image])
+  redirect '/admin'
 end
 
 post '/boards' do

@@ -1,12 +1,17 @@
 require 'bundler/setup'
 Bundler.require
+require 'carrierwave/orm/activerecord'
 
 if development?
-    ActiveRecord::Base.establish_connection("sqlite3:db/development.db")
+   ActiveRecord::Base.establish_connection("sqlite3:db/development.db")
 end
 
+class ImageUploader < CarrierWave::Uploader::Base
+  storage :fog
+end
 
 class Stamp < ActiveRecord::Base
+  mount_uploader :data, ImageUploader
   has_many :put_stamps
   has_many :stamps, through: :put_stamps 
 end
