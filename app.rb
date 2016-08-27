@@ -44,7 +44,7 @@ post '/sign_in' do
 end
 
 get '/admin_page' do
-  if User.find_by(session[:user_token])
+  if User.find_by(token: session[:user_token]).administrator?
     erb :admin_page
   else
     redirect '/sign_in'
