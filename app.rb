@@ -5,7 +5,8 @@ require './models'
 require './api'
 require 'json'
 require 'securerandom'
-
+set :environment, :production
+set :port, 80
 use Rack::Session::Cookie
 set :server, 'thin'
 

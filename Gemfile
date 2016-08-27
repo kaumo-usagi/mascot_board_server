@@ -6,6 +6,7 @@ gem "sinatra"
 gem "sinatra-contrib"
 gem "sinatra-activerecord"
 gem "sinatra-websocket"
+gem "redis"
 gem "rake"
 gem 'bcrypt'
 gem 'carrierwave'
