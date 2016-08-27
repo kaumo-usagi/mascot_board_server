@@ -7,12 +7,13 @@
 <script type="text/javascript">
   window.onload = function(){
     (function(){
+      var user;
       var show = function(el){
         return function(msg){ el.innerHTML = msg + '<br />' + el.innerHTML; }
       }(document.getElementById('msgs'));
       var ws = new WebSocket('ws://' + window.location.host + window.location.pathname);
       var onMouseMove = function(e) {
-        var msg = { type: "mousemove" };
+        var msg = { type: "mousemove", user: user };
         msg.position = { x: e.clientX, y: e.clientY };
         ws.send(JSON.stringify(msg));
       };
@@ -29,14 +30,16 @@
         if (data.type === "message") {
           show(data.user.name + ': ' + data.body);
         } else if  (data.type === "mousemove") {
-          // TODO: not yet implememnted
+          console.log(data);
+        } else if  (data.type === "user") {
+          user = data.user;
         }
       };
       var sender = function(f){
         var input     = document.getElementById('input');
         input.onclick = function(){ input.value = "" };
         f.onsubmit    = function(){
-          var msg = { type: "message", body: input.value };
+          var msg = { type: "message", body: input.value, user: user };
           ws.send(JSON.stringify(msg));
           input.value = "send a message";
           return false;
