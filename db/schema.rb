@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160827064544) do
+ActiveRecord::Schema.define(version: 20160827174026) do
 
   create_table "boards", force: :cascade do |t|
     t.integer  "user_id"
@@ -19,6 +19,8 @@ ActiveRecord::Schema.define(version: 20160827064544) do
     t.string   "screen_name"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.index ["stamp_id"], name: "index_boards_on_stamp_id"
+    t.index ["user_id"], name: "index_boards_on_user_id"
   end
 
   create_table "put_stamps", force: :cascade do |t|
@@ -26,6 +28,8 @@ ActiveRecord::Schema.define(version: 20160827064544) do
     t.integer "stamp_id"
     t.string  "x"
     t.string  "y"
+    t.index ["board_id"], name: "index_put_stamps_on_board_id"
+    t.index ["stamp_id"], name: "index_put_stamps_on_stamp_id"
   end
 
   create_table "put_texts", force: :cascade do |t|
@@ -34,6 +38,8 @@ ActiveRecord::Schema.define(version: 20160827064544) do
     t.integer "body"
     t.string  "x"
     t.string  "y"
+    t.index ["board_id"], name: "index_put_texts_on_board_id"
+    t.index ["text_id"], name: "index_put_texts_on_text_id"
   end
 
   create_table "stamps", force: :cascade do |t|
@@ -53,6 +59,7 @@ ActiveRecord::Schema.define(version: 20160827064544) do
     t.string   "mail"
     t.string   "password_digest"
     t.string   "token"
+    t.index ["board_id"], name: "index_users_on_board_id"
   end
 
 end
