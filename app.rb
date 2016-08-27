@@ -5,7 +5,7 @@ require './models'
 require './api'
 require 'json'
 require 'securerandom'
-unless ENV["DEVELOPMENT"]
+unless development? 
   set :environment, :production
   set :port, 80
 end
