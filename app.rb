@@ -7,7 +7,11 @@ require 'json'
 set :server, 'thin'
 set :sockets, Hash.new { |h, k| h[k] = [] }
 
-get '/:id' do
+get '/' do
+  erb :index
+end
+
+get '/room/:id' do
   @id = params[:id]
 
   user_attrs = { id: 1, name: "izumin" }
