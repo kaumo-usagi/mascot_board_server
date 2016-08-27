@@ -6,3 +6,8 @@ gem "sinatra"
 gem "sinatra-contrib"
 gem "sinatra-activerecord"
 gem "sinatra-websocket"
+gem "rake"
+
+group :development, :test do
+  gem 'sqlite3'
+end
