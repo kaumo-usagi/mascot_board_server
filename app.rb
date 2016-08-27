@@ -40,8 +40,7 @@ get '/' do
 end
 
 get '/sign_up' do
-  @form_action = '/sign_up'
-  @form_title = "SignupPage"
+  @form_action, @form_title, @submit_text = '/sign_up', "SignupPage", "登録"
   erb :sign
 end
 
@@ -52,8 +51,7 @@ post '/sign_up' do
 end
 
 get '/sign_in' do
-  @form_action = '/sign_in'
-  @form_title = "SigninPage"
+  @form_action, @form_title, @submit_text = '/sign_in' ,"SigninPage", "ログイン"
   erb :sign
 end
 
