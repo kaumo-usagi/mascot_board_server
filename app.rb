@@ -45,9 +45,8 @@ post '/sign_in' do
 end
 
 get '/admin' do
-  p session[:user_token]
   if User.find_by(token: session[:user_token]).administrator?
-    @stamp_data = Stamp.all
+    @stamps = Stamp.all
     erb :admin_page
   else
     redirect '/sign_in'
@@ -55,7 +54,6 @@ get '/admin' do
 end
 
 post '/stamp_uploader' do
-  p params[:image]
   Stamp.create(data: params[:image])
   redirect '/admin'
 end
