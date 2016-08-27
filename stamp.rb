@@ -1,6 +1,6 @@
 post '/boards/:board_name/stamps.json' do
   data = JSON.parse(request.body.read)
-  stamps = PutStamps.new(
+  stamps = PutStamp.new(
     board_id: params[:board_name],
     stamp_id: data["stamp_id"], 
     x: data["x"], 
@@ -9,7 +9,6 @@ post '/boards/:board_name/stamps.json' do
   status(stamps.save ?  204 : 404)
 end
 
-delete '/boards/:board_name/stamps.json' do
-  data = JSON.parse(request.body.read)
-  PutStamps.find_by(id: data["stamp_id"]).delete
+delete '/boards/:board_name/stamps/:stamp_id.json' do
+  PutStamp.where(stamp_id: params[:stamp_id].to_i, board_id: params[:board_name].to_i)[0].delete
 end
