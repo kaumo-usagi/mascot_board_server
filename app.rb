@@ -20,12 +20,13 @@ end
 
 post '/' do
   session[:id] = SecureRandom.uuid
-  User.create(name: session[:id], screen_name: params[:user_name])
-  redirect '/'
+  Board.create(name: session[:id], screen_name: params[:board_name])
+  redirect "/board_room/#{session[:id]}"
 end
 
-get '/room/:id' do
-  @id = params[:id]
+get '/board_room/:id' do
+  data = Board.find_by(name: session[:id])
+  @id = data.screen_name 
 
   user_attrs = { id: 1, name: "izumin" }
 
