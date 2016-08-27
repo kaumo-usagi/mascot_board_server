@@ -12,7 +12,7 @@ get '/:id' do
   user_attrs = { id: 1, name: "izumin" }
 
   if !request.websocket?
-    erb :index
+    erb :room
   else
     request.websocket do |ws|
       ws.onopen do
