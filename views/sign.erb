@@ -6,9 +6,9 @@
   <h1 style="text-align:center;"><%= @form_title.to_s %></h1><br>
   <form action="<%= @form_action.to_s %>" method="POST">
     <ul style="list-style:none;">
-      <li><input type="mail" name="mail" class="form-control" /></li><br>
-      <li><input type="password" name="password" class="form-control" /></li><br>
-      <li><input type="submit" class="form-control" /></li><br>
+      <li><input type="mail" name="mail" class="form-control" placeholder="MailAddress" /></li><br>
+      <li><input type="password" name="password" class="form-control" placeholder="Password" /></li><br>
+      <li><input type="submit" class="form-control" value="<%= @submit_text.to_s %>"/></li><br>
     </ul>
   </form>
 </div>
