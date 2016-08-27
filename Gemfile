@@ -5,19 +5,13 @@ ruby "2.3.1"
 gem "sinatra"
 gem "sinatra-contrib"
 gem "sinatra-activerecord"
+gem 'activerecord-refresh_connection'
 gem "sinatra-websocket"
 gem "redis"
 gem "rake"
 gem 'bcrypt'
 gem 'carrierwave'
 gem "fog-aws"
-
-group :development, :test do
-  gem 'sqlite3'
-end
-
-group :production do
-  gem 'pg'
-end
+gem 'sqlite3'
 
 gem "em-hiredis"
