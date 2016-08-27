@@ -7,7 +7,6 @@ require 'securerandom'
 
 use Rack::Session::Cookie
 set :server, 'thin'
-set :sockets, Hash.new { |h, k| h[k] = [] }
 
 get '/' do
   if session[:user_name]
@@ -33,23 +32,23 @@ get '/board_room/:id' do
   if !request.websocket?
     erb :room
   else
+    redis = EM::Hiredis.connect
+
     request.websocket do |ws|
       ws.onopen do
-        ws.send({ user: user_attrs, body: "Hello World!" }.to_json)
-        settings.sockets[@id] << ws
+        redis.pubsub.subscribe(@id) do |msg|
+          ws.send({ user: user_attrs, body: msg }.to_json)
+        end
       end
 
       ws.onmessage do |msg|
         EM.next_tick do
-          settings.sockets[@id].each do |s|
-            s.send({ user: user_attrs, body: msg }.to_json)
-          end
+          redis.publish(@id, msg).errback { |e| p e }
         end
       end
 
       ws.onclose do
-        warn("websocket closed")
-        settings.sockets[@id].delete(ws)
+        redis.pubsub.unsubscribe(@id)
       end
     end
   end
