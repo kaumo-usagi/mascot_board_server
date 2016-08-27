@@ -1,3 +1,5 @@
+require 'bundler/setup'
+Bundler.require
 require 'carrierwave/orm/activerecord'
 
 if development?
