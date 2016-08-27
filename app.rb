@@ -83,7 +83,7 @@ end
 
 post '/boards' do
   name = SecureRandom.uuid
-  Board.create(name: name, screen_name: params[:board_name])
+  Board.create!(name: name, screen_name: params[:board_name])
   redirect "/boards/#{name}"
 end
 
