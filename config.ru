@@ -17,4 +17,6 @@ CarrierWave.configure do |config|
   config.fog_attributes = { 'Cache-Control' => "max-age=#{365.day.to_i}" }
   config.storage = :fog
 end
+use ActiveRecord::ConnectionAdapters::RefreshConnectionManagement
+
 run Sinatra::Application
