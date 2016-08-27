@@ -4,11 +4,22 @@ require './models'
 
 require 'json'
 
+use Rack::Session::Cookie
 set :server, 'thin'
 set :sockets, Hash.new { |h, k| h[k] = [] }
 
 get '/' do
-  erb :index
+  if session[:user_name]
+    @room_list = Room.all
+    erb :index
+  else
+    erb :index
+  end
+end
+
+post '/' do
+ session[:user_name] = params[:user_name]
+ redirect '/'
 end
 
 get '/room/:id' do
