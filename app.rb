@@ -13,6 +13,7 @@ use Rack::Session::Cookie
 set :server, 'thin'
 
 get '/' do
+  @rooms = Board.all
   erb :index
 end
 
