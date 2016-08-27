@@ -70,11 +70,6 @@ get '/admin_page' do
   end
 end
 
-post "/boards/:board_name/users.json" do
-  board = Board.find_by(name: params[:board_name])
-  json user.to_json
-end
-
 post '/boards' do
   name = SecureRandom.uuid
   Board.create(name: name, screen_name: params[:board_name])
