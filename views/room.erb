@@ -10,18 +10,34 @@
       var show = function(el){
         return function(msg){ el.innerHTML = msg + '<br />' + el.innerHTML; }
       }(document.getElementById('msgs'));
-      var ws       = new WebSocket('ws://' + window.location.host + window.location.pathname);
-      ws.onopen    = function()  { show('websocket opened'); };
-      ws.onclose   = function()  { show('websocket closed'); }
+      var ws = new WebSocket('ws://' + window.location.host + window.location.pathname);
+      var onMouseMove = function(e) {
+        var msg = { type: "mousemove" };
+        msg.position = { x: e.clientX, y: e.clientY };
+        ws.send(JSON.stringify(msg));
+      };
+      ws.onopen = function() {
+        show('websocket opened');
+        document.addEventListener("mousemove", onMouseMove);
+      };
+      ws.onclose = function() {
+        show('websocket closed');
+        document.removeEventListener("mousemove", onMouseMove);
+      }
       ws.onmessage = function(m) {
         data = JSON.parse(m.data);
-        show(data.user.name + ': ' + data.body);
+        if (data.type === "message") {
+          show(data.user.name + ': ' + data.body);
+        } else if  (data.type === "mousemove") {
+          // TODO: not yet implememnted
+        }
       };
       var sender = function(f){
         var input     = document.getElementById('input');
         input.onclick = function(){ input.value = "" };
         f.onsubmit    = function(){
-          ws.send(input.value);
+          var msg = { type: "message", body: input.value };
+          ws.send(JSON.stringify(msg));
           input.value = "send a message";
           return false;
         }

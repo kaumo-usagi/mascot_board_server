@@ -8,6 +8,11 @@ require 'securerandom'
 use Rack::Session::Cookie
 set :server, 'thin'
 
+EVENT_TYPES = {
+  mousemove: "mousemove",
+  message: "message"
+}.freeze
+
 get '/' do
   erb :index
 end
@@ -65,24 +70,36 @@ get '/boards/:id' do
     erb :room
   else
     redis = EM::Hiredis.connect
-    channel = "boards::#{@board.id}"
+    channel_base = "boards::#{@board.id}"
+    channel_message = "#{channel_base}::message"
+    channel_mouse = "#{channel_base}::mouse"
 
     request.websocket do |ws|
       ws.onopen do
-        redis.pubsub.subscribe(channel) do |msg|
-          ws.send({ user: user_attrs, body: msg }.to_json)
+        redis.pubsub.subscribe(channel_message) do |msg|
+          ws.send({ type: EVENT_TYPES[:message], user: user_attrs, body: msg }.to_json)
+        end
+        redis.pubsub.subscribe(channel_mouse) do |msg|
+          pos = JSON.parse(msg)
+          ws.send({ type: EVENT_TYPES[:mousemove], user: user_attrs, pos: pos }.to_json)
         end
       end
 
       ws.onmessage do |msg|
         EM.next_tick do
-          redis.publish(channel, msg).errback { |e| p e }
+          json = JSON.parse(msg)
+          case json["type"]
+          when EVENT_TYPES[:message]
+            redis.publish(channel_message, json["body"]).errback { |e| p e }
+          when EVENT_TYPES[:mousemove]
+            redis.publish(channel_mouse, json["position"].to_json).errback { |e| p e }
+          end
         end
       end
 
       ws.onclose do
         warn("close websocket connection")
-        redis.pubsub.unsubscribe(channel)
+        redis.pubsub.unsubscribe(channel_message)
       end
     end
   end
