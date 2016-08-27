@@ -7,15 +7,27 @@ end
 
 
 class Stamp < ActiveRecord::Base
-  belongs_to :board
+  has_many :put_stamps
+  has_many :stamps, through: :put_stamps 
 end
 
 class User < ActiveRecord::Base
-  has_many :boards
+  belongs_to :board
   validates name, uniqueness: true
 end
 
 class Board < ActiveRecord::Base
   has_many :users
-  has_many :stamps
+  has_many :put_stamps
+  has_many :stamps, through: :put_stamps 
+  has_many :put_texts
+end
+
+class PutStamp < ActiveRecord::Base
+  belongs_to :board
+  belongs_to :stamp
+end
+
+class PutText < ActiveRecord::Base
+  belongs_to :board
 end
