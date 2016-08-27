@@ -5,8 +5,10 @@ require './models'
 require './api'
 require 'json'
 require 'securerandom'
-set :environment, :production
-set :port, 80
+unless ENV["DEVELOPMENT"]
+  set :environment, :production
+  set :port, 80
+end
 use Rack::Session::Cookie
 set :server, 'thin'
 
