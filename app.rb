@@ -87,3 +87,7 @@ get '/boards/:id' do
     end
   end
 end
+
+#====================
+#StampAPI
+#====================
