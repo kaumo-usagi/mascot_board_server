@@ -2,6 +2,7 @@ require 'bundler'
 Bundler.require
 require 'sinatra/reloader' if development?
 require './models'
+require './stamp'
 require 'json'
 require 'securerandom'
 
@@ -87,7 +88,3 @@ get '/boards/:id' do
     end
   end
 end
-
-#====================
-#StampAPI
-#====================
