@@ -4,4 +4,9 @@
     <input type="text" name="board_name">
     <input type="submit">
   </form>
+  <ul style="list-style:none;">
+    <% @board.each do |board| %>
+      <li><a href="/boards/<%= board.name %>"><%= board.screen_name  %></a></li>
+    <% end %>
+  </ul>
 </center>
