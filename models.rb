@@ -12,6 +12,7 @@ end
 
 class User < ActiveRecord::Base
   has_many :boards
+  validates name, uniqueness: true
 end
 
 class Board < ActiveRecord::Base

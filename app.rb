@@ -1,8 +1,8 @@
 require 'bundler'
 Bundler.require
 require './models'
-
 require 'json'
+require 'securerandom'
 
 use Rack::Session::Cookie
 set :server, 'thin'
@@ -18,8 +18,9 @@ get '/' do
 end
 
 post '/' do
- session[:user_name] = params[:user_name]
- redirect '/'
+  session[:id] = SecureRandom.uuid
+  User.create(name: session[:id], screen_name: params[:user_name])
+  redirect '/'
 end
 
 get '/room/:id' do
