@@ -1,5 +1,10 @@
-<form action="<%= @form_action.to_s %>" method="POST">
-  <input type="mail" name="mail"/>
-  <input type="password" name="password"/>
-  <input type="submit"/>
-</form>
+<center>
+  <h1><%= @form_title.to_s %></h1><br>
+  <form action="<%= @form_action.to_s %>" method="POST">
+    <ul style="list-style:none;">
+      <li><input type="mail" name="mail"/></li><br>
+      <li><input type="password" name="password"/></li><br>
+      <li><input type="submit"/></li><br>
+    </ul>
+  </form>
+</center>
