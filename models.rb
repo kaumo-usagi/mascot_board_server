@@ -7,5 +7,10 @@ end
 
 
 class Stamp < ActiveRecord::Base
+end
 
+class User < ActiveRecord::Base
+end
+
+class Board < ActiveRecord::Base
 end
