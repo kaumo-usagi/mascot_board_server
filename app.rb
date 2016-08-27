@@ -102,22 +102,30 @@ get '/boards/:id' do
   else
     redis = EM::Hiredis.connect
     channel_base = "boards::#{@board.id}"
+    channel_user = "#{channel_base}::user"
     channel_message = "#{channel_base}::message"
-    channel_mouse = "#{channel_base}::mouse"
+    channel_mouse = "#{channel_base}::cursor::move"
 
     user_json = { id: user.id, name: user.name }
 
     request.websocket do |ws|
       ws.onopen do
-        ws.send({ type: EVENT_TYPES[:user], user: user_json }.to_json)
+        redis.publish(channel_user, user_json.to_json).errback { |e| p e }
+        @board.users.each do |u|
+          ws.send({ type: EVENT_TYPES[:user], data: { id: u.id, name: u.name } }.to_json) if u.id != user.id
+        end
 
+        redis.pubsub.subscribe(channel_user) do |msg|
+          json = JSON.parse(msg)
+          ws.send({ type: EVENT_TYPES[:user], data: json }.to_json)
+        end
         redis.pubsub.subscribe(channel_message) do |msg|
           json = JSON.parse(msg)
-          ws.send({ type: EVENT_TYPES[:message], user: json["user"], body: json["body"] }.to_json)
+          ws.send({ type: EVENT_TYPES[:message], data: { user: json["user"], body: json["body"] } }.to_json)
         end
         redis.pubsub.subscribe(channel_mouse) do |msg|
           json = JSON.parse(msg)
-          ws.send({ type: EVENT_TYPES[:mousemove], user: json["user"], position: json["position"] }.to_json)
+          ws.send({ type: EVENT_TYPES[:mousemove], data: { user: json["user"], position: json["position"] } }.to_json)
         end
       end
 
@@ -128,7 +136,8 @@ get '/boards/:id' do
           when EVENT_TYPES[:message]
             redis.publish(channel_message, msg).errback { |e| p e }
           when EVENT_TYPES[:mousemove]
-            redis.publish(channel_mouse, msg).errback { |e| p e }
+            json["user"] = user_json
+            redis.publish(channel_mouse, json.to_json).errback { |e| p e }
           end
         end
       end
