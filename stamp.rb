@@ -6,7 +6,7 @@ post '/boards/:board_name/stamps.json' do
     x: data["x"], 
     y: data["y"]
   )
-  stamps.save ? status 204 : 404
+  status(stamps.save ?  204 : 404)
 end
 
 delete '/boards/:board_name/stamps.json' do
