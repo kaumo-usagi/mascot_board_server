@@ -35,6 +35,7 @@ ANONYMOUS_USER_NAMES = [
 ].map { |name| "匿名#{name}" }.freeze
 
 get '/' do
+  @boards = Board.all
   erb :index
 end
 
