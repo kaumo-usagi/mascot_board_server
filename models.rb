@@ -15,12 +15,10 @@ class Stamp < ActiveRecord::Base
 end
 
 class User < ActiveRecord::Base
-  belongs_to :board
-  validates :name, uniqueness: true
+  has_many :board_users
+  has_many :boards, through: :board_users
+
   has_secure_password
-  validates :mail,
-    presence: true,
-    format: {with:/.+@.+/}
   validates :password, confirmation: true,
     unless: Proc.new { |a| a.password.blank? } 
 end

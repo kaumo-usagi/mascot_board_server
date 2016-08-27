@@ -10,7 +10,29 @@ unless development?
   set :port, 80
 end
 use Rack::Session::Cookie
+enable :sessions
+
 set :server, 'thin'
+
+EVENT_TYPES = {
+  mousemove:  "mousemove",
+  message:    "message",
+  user:       "user"
+}.freeze
+
+ANONYMOUS_USER_NAMES = [
+  "カピバラ",
+  "カモノハシ",
+  "うんこ",
+  "ベンガルトラ",
+  "インドゾウ",
+  "イソギンチャク",
+  "ホワイトライオン",
+  "コウテイペンギン",
+  "アホウドリ",
+  "ドードー",
+  "クマノミ"
+].map { |name| "匿名#{name}" }.freeze
 
 get '/' do
   @boards = Board.all
@@ -67,8 +89,13 @@ end
 
 get '/boards/:id' do
   @board = Board.find_by(name: params[:id])
-
-  user_attrs = { id: 1, name: "izumin" }
+  user = User.find_by(id: session[:user_id])
+  if user
+    @board.users << user
+  else
+    user = @board.users.create!(name: ANONYMOUS_USER_NAMES.sample, password: "password", password_confirmation: "password")
+    session[:user_id] = user.id
+  end
 
   if @board.nil?
     redirect "/"
@@ -76,24 +103,41 @@ get '/boards/:id' do
     erb :room
   else
     redis = EM::Hiredis.connect
-    channel = "boards::#{@board.id}"
+    channel_base = "boards::#{@board.id}"
+    channel_message = "#{channel_base}::message"
+    channel_mouse = "#{channel_base}::mouse"
+
+    user_json = { id: user.id, name: user.name }
 
     request.websocket do |ws|
       ws.onopen do
-        redis.pubsub.subscribe(channel) do |msg|
-          ws.send({ user: user_attrs, body: msg }.to_json)
+        ws.send({ type: EVENT_TYPES[:user], user: user_json }.to_json)
+
+        redis.pubsub.subscribe(channel_message) do |msg|
+          json = JSON.parse(msg)
+          ws.send({ type: EVENT_TYPES[:message], user: json["user"], body: json["body"] }.to_json)
+        end
+        redis.pubsub.subscribe(channel_mouse) do |msg|
+          json = JSON.parse(msg)
+          ws.send({ type: EVENT_TYPES[:mousemove], user: json["user"], position: json["position"] }.to_json)
         end
       end
 
       ws.onmessage do |msg|
         EM.next_tick do
-          redis.publish(channel, msg).errback { |e| p e }
+          json = JSON.parse(msg)
+          case json["type"]
+          when EVENT_TYPES[:message]
+            redis.publish(channel_message, msg).errback { |e| p e }
+          when EVENT_TYPES[:mousemove]
+            redis.publish(channel_mouse, msg).errback { |e| p e }
+          end
         end
       end
 
       ws.onclose do
         warn("close websocket connection")
-        redis.pubsub.unsubscribe(channel)
+        redis.pubsub.unsubscribe(channel_message)
       end
     end
   end
