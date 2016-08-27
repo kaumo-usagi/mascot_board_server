@@ -37,6 +37,6 @@ get '/stamp_list/:page.json' do
   stamps = Stamp.page(params[:page]).per(15)
   {
     id:  stamps.map{ |stamp| stamp.id },
-    url: stamps.map{ |stamp| stamp.url}
+    url: stamps.map{ |stamp| stamp.data.url}
   }.to_json
 end
