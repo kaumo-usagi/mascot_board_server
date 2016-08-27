@@ -19,6 +19,7 @@ end
 
 get '/sign_up' do
   @form_action = '/sign_up'
+  @form_title = "SignupPage"
   erb :sign
 end
 
@@ -30,6 +31,7 @@ end
 
 get '/sign_in' do
   @form_action = '/sign_in'
+  @form_title = "SigninPage"
   erb :sign
 end
 
