@@ -3,8 +3,6 @@ Bundler.require
 require 'carrierwave/orm/activerecord'
 require 'carrierwave/processing/rmagick'
 
-puts "FackModels"
-
 ActiveRecord::Base.establish_connection("sqlite3:db/development.db")
 
 class ImageUploader < CarrierWave::Uploader::Base
