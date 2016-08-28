@@ -19,7 +19,11 @@ EVENT_TYPES = {
   message:    "message",
   user:       "user",
   text_put:   "text::put",
-  image_put:  "image::put"
+  image_put:  "image::put",
+  text_drag:  "text::drag",
+  image_drag: "image::drag",
+  text_drag_end:  "text::drag::end",
+  image_drag_end: "image::drag::end",
 }.freeze
 
 get '/' do
@@ -95,6 +99,8 @@ get '/boards/:id' do
     channel_mouse = "#{channel_base}::cursor::move"
     channel_text_put = "#{channel_base}::text::put"
     channel_image_put = "#{channel_base}::image::put"
+    channel_text_drag = "#{channel_base}::text::drag"
+    channel_image_drag = "#{channel_base}::image::drag"
 
     user_json = { id: user.id, name: user.name, color: user.color }
 
@@ -125,6 +131,14 @@ get '/boards/:id' do
           json = JSON.parse(msg)
           ws.send({ type: EVENT_TYPES[:image_put], data: { image: json } }.to_json)
         end
+        redis.pubsub.subscribe(channel_text_drag) do |msg|
+          json = JSON.parse(msg)
+          ws.send({ type: EVENT_TYPES[:text_drag], data: { text: json } }.to_json) unless json["user"]["id"] == user.id
+        end
+        redis.pubsub.subscribe(channel_image_drag) do |msg|
+          json = JSON.parse(msg)
+          ws.send({ type: EVENT_TYPES[:image_drag], data: { image: json } }.to_json) unless json["user"]["id"] == user.id
+        end
       end
 
       ws.onmessage do |msg|
@@ -136,6 +150,20 @@ get '/boards/:id' do
           when EVENT_TYPES[:mousemove]
             json["user"] = user_json
             redis.publish(channel_mouse, json.to_json).errback { |e| p e }
+          when EVENT_TYPES[:text_drag]
+            json["user"] = user_json
+            redis.publish(channel_text_drag, json.to_json).errback { |e| p e }
+          when EVENT_TYPES[:text_drag_end]
+            json["user"] = user_json
+            redis.publish(channel_text_drag, json.to_json).errback { |e| p e }
+            PutText.find(json["id"]).update(x: json["position"]["x"], y: json["position"]["y"])
+          when EVENT_TYPES[:image_drag]
+            json["user"] = user_json
+            redis.publish(channel_image_drag, json.to_json).errback { |e| p e }
+          when EVENT_TYPES[:image_drag_end]
+            json["user"] = user_json
+            redis.publish(channel_image_drag, json.to_json).errback { |e| p e }
+            PutStamp.find(json["id"]).update(x: json["position"]["x"], y: json["position"]["y"])
           end
         end
       end

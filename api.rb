@@ -23,7 +23,7 @@ post '/boards/:board_name/stamps.json' do
     )
     if put_stamp.save
       stamp = put_stamp.stamp
-      res_body = { id: put_stamp.id, stamp_id: stamp.id, x: put_stamp.x, y: put_stamp.y, url: stamp.data.url }
+      res_body = { id: put_stamp.id, stamp_id: stamp.id, x: put_stamp.x, y: put_stamp.y, url: stamp.data.small.url }
       redis = EM::Hiredis.connect
       redis.publish("boards::#{board.id}::image::put", res_body.to_json)
       status 204
