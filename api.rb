@@ -18,15 +18,21 @@ end
 
 
 post '/boards/:board_name/texts.json' do
+  board = Board.find_by(name: params[:board_name])
   data = JSON.parse(request.body.read)
-  stamps = PutText.new(
-    board_id: params[:board_name],
-    text_id:  data["stamp_id"], 
-    body:     data["text"],
+  text = PutText.new(
+    board_id: board.id,
+    body:     data["body"],
     x:        data["x"], 
     y:        data["y"]
   )
-  status(stamps.save ?  204 : 404)
+  if text.save
+    redis = EM::Hiredis.connect
+    redis.publish("boards::#{board.id}::text::put", text.to_json)
+    status 204
+  else
+    status 400
+  end
 end
 
 delete '/boards/:board_name/stamps/:text_id.json' do

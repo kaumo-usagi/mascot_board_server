@@ -17,7 +17,8 @@ set :server, 'thin'
 EVENT_TYPES = {
   mousemove:  "mousemove",
   message:    "message",
-  user:       "user"
+  user:       "user",
+  text_put:   "text::put"
 }.freeze
 
 get '/' do
@@ -91,6 +92,7 @@ get '/boards/:id' do
     channel_user = "#{channel_base}::user"
     channel_message = "#{channel_base}::message"
     channel_mouse = "#{channel_base}::cursor::move"
+    channel_text_put = "#{channel_base}::text::put"
 
     user_json = { id: user.id, name: user.name, color: user.color }
 
@@ -112,6 +114,10 @@ get '/boards/:id' do
         redis.pubsub.subscribe(channel_mouse) do |msg|
           json = JSON.parse(msg)
           ws.send({ type: EVENT_TYPES[:mousemove], data: { user: json["user"], position: json["position"] } }.to_json)
+        end
+        redis.pubsub.subscribe(channel_text_put) do |msg|
+          json = JSON.parse(msg)
+          ws.send({ type: EVENT_TYPES[:text_put], data: { text: json } }.to_json)
         end
       end
 
