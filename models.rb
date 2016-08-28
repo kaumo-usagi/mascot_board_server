@@ -1,6 +1,5 @@
 require 'bundler/setup'
 Bundler.require
-require 'carrierwave'
 require 'carrierwave/orm/activerecord'
 require 'carrierwave/processing/rmagick'
 
@@ -67,3 +66,4 @@ end
 class PutText < ActiveRecord::Base
   belongs_to :board
 end
+
