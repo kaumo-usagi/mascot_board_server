@@ -1,3 +1,4 @@
+# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -17,17 +18,19 @@ ActiveRecord::Schema.define(version: 20160827174026) do
     t.string   "screen_name"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
-    t.index ["name"], name: "index_boards_on_name"
   end
+
+  add_index "boards", ["name"], name: "index_boards_on_name"
 
   create_table "put_stamps", force: :cascade do |t|
     t.integer "board_id"
     t.integer "stamp_id"
     t.string  "x"
     t.string  "y"
-    t.index ["board_id"], name: "index_put_stamps_on_board_id"
-    t.index ["stamp_id"], name: "index_put_stamps_on_stamp_id"
   end
+
+  add_index "put_stamps", ["board_id"], name: "index_put_stamps_on_board_id"
+  add_index "put_stamps", ["stamp_id"], name: "index_put_stamps_on_stamp_id"
 
   create_table "put_texts", force: :cascade do |t|
     t.integer "board_id"
@@ -35,9 +38,10 @@ ActiveRecord::Schema.define(version: 20160827174026) do
     t.integer "body"
     t.string  "x"
     t.string  "y"
-    t.index ["board_id"], name: "index_put_texts_on_board_id"
-    t.index ["text_id"], name: "index_put_texts_on_text_id"
   end
+
+  add_index "put_texts", ["board_id"], name: "index_put_texts_on_board_id"
+  add_index "put_texts", ["text_id"], name: "index_put_texts_on_text_id"
 
   create_table "stamps", force: :cascade do |t|
     t.string   "string"
@@ -50,13 +54,15 @@ ActiveRecord::Schema.define(version: 20160827174026) do
   create_table "users", force: :cascade do |t|
     t.integer  "board_id"
     t.string   "name"
+    t.string   "color"
     t.datetime "created_at",                      null: false
     t.datetime "updated_at",                      null: false
     t.boolean  "administrator",   default: false, null: false
     t.string   "mail"
     t.string   "password_digest"
     t.string   "token"
-    t.index ["board_id"], name: "index_users_on_board_id"
   end
+
+  add_index "users", ["board_id"], name: "index_users_on_board_id"
 
 end
