@@ -20,20 +20,6 @@ EVENT_TYPES = {
   user:       "user"
 }.freeze
 
-ANONYMOUS_USER_NAMES = [
-  "カピバラ",
-  "カモノハシ",
-  "うんこ",
-  "ベンガルトラ",
-  "インドゾウ",
-  "イソギンチャク",
-  "ホワイトライオン",
-  "コウテイペンギン",
-  "アホウドリ",
-  "ドードー",
-  "クマノミ"
-].map { |name| "匿名#{name}" }.freeze
-
 get '/' do
   @boards = Board.all
   erb :index
@@ -91,14 +77,14 @@ get '/boards/:id' do
   if user
     @board.users << user
   else
-    user = @board.users.create!(name: ANONYMOUS_USER_NAMES.sample, password: "password", password_confirmation: "password")
+    user = @board.users.create!(name: User.random_name, color: User.random_color, password: "password", password_confirmation: "password")
     session[:user_id] = user.id
   end
 
   if @board.nil?
     redirect "/"
   elsif !request.websocket?
-    erb :room
+    erb :room , layout: :layout 
   else
     redis = EM::Hiredis.connect
     channel_base = "boards::#{@board.id}"
