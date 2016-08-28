@@ -4,10 +4,11 @@ require 'kaminari/sinatra'
 get '/boards/:board_name/stamps.json' do
   stamps = Board.find_by(name: params[:board_name]).put_stamps
   stamps.map { |stamp| 
-    { board_id: stamp.board_id,
+    { id:       stamp.id,
       stamp_id: stamp.stamp_id, 
       x:        stamp.x, 
-      y:        stamp.y 
+      y:        stamp.y,
+      url:      stamp.stamp.data.small.url
     } }.to_json
 end
 
@@ -42,12 +43,7 @@ end
 
 get '/boards/:board_name/texts.json' do
   texts = Board.find_by(name: params[:board_name]).put_texts
-  texts.map { |text| 
-    { board_id: text.board,
-      body:     text.body, 
-      x:        text.x, 
-      y:        text.y,
-    } }.to_json
+  json texts.tap(&method(:p))
 end
 
 post '/boards/:board_name/texts.json' do
