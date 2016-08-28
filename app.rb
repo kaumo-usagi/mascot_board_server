@@ -18,7 +18,8 @@ EVENT_TYPES = {
   mousemove:  "mousemove",
   message:    "message",
   user:       "user",
-  text_put:   "text::put"
+  text_put:   "text::put",
+  image_put:  "image::put"
 }.freeze
 
 get '/' do
@@ -93,6 +94,7 @@ get '/boards/:id' do
     channel_message = "#{channel_base}::message"
     channel_mouse = "#{channel_base}::cursor::move"
     channel_text_put = "#{channel_base}::text::put"
+    channel_image_put = "#{channel_base}::image::put"
 
     user_json = { id: user.id, name: user.name, color: user.color }
 
@@ -118,6 +120,10 @@ get '/boards/:id' do
         redis.pubsub.subscribe(channel_text_put) do |msg|
           json = JSON.parse(msg)
           ws.send({ type: EVENT_TYPES[:text_put], data: { text: json } }.to_json)
+        end
+        redis.pubsub.subscribe(channel_image_put) do |msg|
+          json = JSON.parse(msg)
+          ws.send({ type: EVENT_TYPES[:image_put], data: { image: json } }.to_json)
         end
       end
 
