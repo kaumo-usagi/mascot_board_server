@@ -112,12 +112,12 @@ get '/boards/:id' do
       ws.onopen do
         redis.publish(channel_user, user_json.to_json).errback { |e| p e }
         @board.users.each do |u|
-          ws.send({ type: EVENT_TYPES[:user], data: { id: u.id, name: u.name } }.to_json) if u.id != user.id
+          ws.send({ type: EVENT_TYPES[:user], data: { user: { id: u.id, name: u.name } } }.to_json) if u.id != user.id
         end
 
         redis.pubsub.subscribe(channel_user) do |msg|
           json = JSON.parse(msg)
-          ws.send({ type: EVENT_TYPES[:user], data: json }.to_json)
+          ws.send({ type: EVENT_TYPES[:user], data: { user: json } }.to_json)
         end
         redis.pubsub.subscribe(channel_message) do |msg|
           json = JSON.parse(msg)
