@@ -84,7 +84,7 @@ get '/boards/:id' do
   if @board.nil?
     redirect "/"
   elsif !request.websocket?
-    erb :room
+    erb :room , layout: :layout 
   else
     redis = EM::Hiredis.connect
     channel_base = "boards::#{@board.id}"
