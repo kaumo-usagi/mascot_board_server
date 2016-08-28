@@ -7,6 +7,6 @@
     </ul>
   </form>
   <% @stamps.each do |stamp| %>
-    <img src="<%= stamp.data %>" alt="">
+    <img src="<%= stamp.data.medium.url %>" alt="">
   <% end %>
 </center>
