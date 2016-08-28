@@ -8,7 +8,7 @@ get '/boards/:board_name/stamps.json' do
       stamp_id: stamp.stamp_id, 
       x:        stamp.x, 
       y:        stamp.y 
-    } }
+    } }.to_json
 end
 
 post '/boards/:board_name/stamps.json' do
@@ -43,8 +43,7 @@ get '/boards/:board_name/texts.json' do
       body:     text.body, 
       x:        text.x, 
       y:        text.y,
-    } }
-
+    } }.to_json
 end
 
 post '/boards/:board_name/texts.json' do
