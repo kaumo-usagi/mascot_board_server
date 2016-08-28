@@ -15,7 +15,7 @@ class Stamp < ActiveRecord::Base
 end
 
 class User < ActiveRecord::Base
-  def self.set_random_name
+  def self.random_name
     [
       "カピバラ", "カモノハシ",
       "うんこ", "ベンガルトラ",
@@ -24,14 +24,14 @@ class User < ActiveRecord::Base
       "アホウドリ", "ドードー", "クマノミ"
     ].map { |name| "匿名#{name}" }.freeze.sample
   end
-  def self.set_random_color
+  def self.random_color
     [
       "#ffadad", "#ffadd6" ,
       "#ffadff", "#d6adff",
       "#adadff", "#add6ff",
       "#add6ff", "#adffd6",
       "#adffad", "#d6ffad"
-    ].map { |name| name }.freeze.sample
+    ].sample
   end
   has_many :board_users
   has_many :boards, through: :board_users

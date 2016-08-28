@@ -77,7 +77,7 @@ get '/boards/:id' do
   if user
     @board.users << user
   else
-    user = @board.users.create!(name: User.set_random_name, color: User.set_random_color, password: "password", password_confirmation: "password")
+    user = @board.users.create!(name: User.random_name, color: User.random_color, password: "password", password_confirmation: "password")
     session[:user_id] = user.id
   end
 
