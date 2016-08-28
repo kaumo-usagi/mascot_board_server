@@ -14,6 +14,7 @@ gem "rake"
 gem 'bcrypt'
 gem 'carrierwave'
 gem "fog-aws"
+gem 'rmagick'
 
 gem 'sqlite3'
 
