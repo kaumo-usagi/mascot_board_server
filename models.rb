@@ -1,8 +1,9 @@
 require 'bundler/setup'
 Bundler.require
-require 'carrierwave'
 require 'carrierwave/orm/activerecord'
 require 'carrierwave/processing/rmagick'
+
+puts "FackModels"
 
 ActiveRecord::Base.establish_connection("sqlite3:db/development.db")
 
@@ -67,3 +68,4 @@ end
 class PutText < ActiveRecord::Base
   belongs_to :board
 end
+

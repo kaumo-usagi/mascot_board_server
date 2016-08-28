@@ -73,6 +73,11 @@ GEM
     kaminari (0.17.0)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
+    kaminari-sinatra (0.1.0)
+      actionview
+      kaminari
+      padrino-helpers
+      sinatra
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
     mime-types (3.1)
@@ -146,6 +151,7 @@ DEPENDENCIES
   em-hiredis
   fog-aws
   kaminari (~> 0.17.0)
+  kaminari-sinatra
   padrino-helpers
   rake
   redis

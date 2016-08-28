@@ -5,6 +5,7 @@ ruby "2.3.1"
 gem "sinatra"
 gem "sinatra-contrib"
 gem 'kaminari', '~> 0.17.0'
+gem 'kaminari-sinatra'
 gem "padrino-helpers"
 gem "sinatra-activerecord"
 gem 'activerecord-refresh_connection'
