@@ -1,11 +1,23 @@
 require 'bundler/setup'
 Bundler.require
+require 'carrierwave'
 require 'carrierwave/orm/activerecord'
+require 'carrierwave/processing/rmagick'
 
 ActiveRecord::Base.establish_connection("sqlite3:db/development.db")
 
 class ImageUploader < CarrierWave::Uploader::Base
+  include CarrierWave::RMagick
   storage :fog
+  version :small do
+      process :resize_to_fit => [150, 150]
+  end
+  version :medium do
+      process :resize_to_fit => [300, 300]
+  end
+  version :large do
+      process :resize_to_fit => [650, 650]
+  end
 end
 
 class Stamp < ActiveRecord::Base
