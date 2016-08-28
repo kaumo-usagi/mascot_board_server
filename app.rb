@@ -121,7 +121,7 @@ get '/boards/:id' do
         end
         redis.pubsub.subscribe(channel_mouse) do |msg|
           json = JSON.parse(msg)
-          ws.send({ type: EVENT_TYPES[:mousemove], data: { user: json["user"], position: json["position"] } }.to_json)
+          ws.send({ type: EVENT_TYPES[:mousemove], data: { user: json["user"], position: json["position"], drawing: json["drawing"] } }.to_json)
         end
         redis.pubsub.subscribe(channel_text_put) do |msg|
           json = JSON.parse(msg)
@@ -150,6 +150,9 @@ get '/boards/:id' do
           when EVENT_TYPES[:mousemove]
             json["user"] = user_json
             redis.publish(channel_mouse, json.to_json).errback { |e| p e }
+            if json["drawing"]
+              # TODO: パスの永続化
+            end
           when EVENT_TYPES[:text_drag]
             json["user"] = user_json
             redis.publish(channel_text_drag, json.to_json).errback { |e| p e }
