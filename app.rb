@@ -92,13 +92,13 @@ get '/boards/:id' do
     channel_message = "#{channel_base}::message"
     channel_mouse = "#{channel_base}::cursor::move"
 
-    user_json = { id: user.id, name: user.name }
+    user_json = { id: user.id, name: user.name, color: user.color }
 
     request.websocket do |ws|
       ws.onopen do
         redis.publish(channel_user, user_json.to_json).errback { |e| p e }
         @board.users.each do |u|
-          ws.send({ type: EVENT_TYPES[:user], data: { user: { id: u.id, name: u.name } } }.to_json) if u.id != user.id
+          ws.send({ type: EVENT_TYPES[:user], data: { user: { id: u.id, name: u.name, color: u.color } } }.to_json) if u.id != user.id
         end
 
         redis.pubsub.subscribe(channel_user) do |msg|
